@@ -55,6 +55,14 @@ props/
 textures/
 test.py
 *.npy
+task_plan.md
+progress.md
+findings.md
+task_issue.md
+doc/task_plan.md
+doc/progress.md
+doc/findings.md
+doc/task_issue.md
 
 unitree_sdk2_python
 
