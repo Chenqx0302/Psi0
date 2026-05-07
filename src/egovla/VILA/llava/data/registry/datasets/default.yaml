@@ -1,0 +1,13 @@
+lerobot_g1_train:
+  _target_: llava.data.SimpleLeRobotVLADataset
+  data_root: "${oc.env:DATA_ROOT,/hfm/data/real_teleop_g1/lerobot}"
+  task_dir: "${oc.env:LEROBOT_TASK_DIR,\"\"}"
+  split: train
+  data_skip: 1
+
+lerobot_g1_eval_sub20:
+  _target_: llava.data.SimpleLeRobotVLADataset
+  data_root: "${oc.env:DATA_ROOT,/hfm/data/real_teleop_g1/lerobot}"
+  task_dir: "${oc.env:LEROBOT_TASK_DIR,\"\"}"
+  split: eval
+  data_skip: 20

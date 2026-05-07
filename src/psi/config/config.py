@@ -40,7 +40,7 @@ class TrainConfig(BaseModel):
     hf_token: str | Path = Path(".hf_token")  # Environment variable or Path to HF Token
 
     lora: bool = False
-    output_dir: str = ".runs"
+    output_dir: str = Field(default_factory=lambda: os.getenv("EXPERIMENTS_HOME", ".runs"))
     gradient_accumulation_steps: int = 1
     mixed_precision: str = "bf16"  # "no" for fp32, "fp16", "bf16"
     max_grad_norm: float | None = None  # 1.0

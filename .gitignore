@@ -67,3 +67,4 @@ doc/task_issue.md
 unitree_sdk2_python
 
 src/h_rdt/datasets/pretrain/egodex_large_values.txt
+experiments/

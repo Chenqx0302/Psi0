@@ -1,9 +1,22 @@
 #!/bin/bash
 
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/../../.." && pwd)
+
+if [ -f "$REPO_ROOT/.env" ]; then
+    set -a
+    source "$REPO_ROOT/.env"
+    set +a
+fi
+
+: "${PSI_HOME:=/data/chenqingxi/Psi0-assets}"
+: "${DATA_HOME:=/data/chenqingxi/Psi0-data}"
+: "${EXPERIMENTS_HOME:=$REPO_ROOT/experiments}"
+
 export OMP_NUM_THREADS=32
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0,1,2,3,4,5,6,7}
 
-source .venv-psi/bin/activate
+source "$REPO_ROOT/.venv-psi/bin/activate"
 
 NPROC_PER_NODE=$(echo $CUDA_VISIBLE_DEVICES | tr ',' '\n' | wc -l)
 ulimit -n 65535
@@ -27,6 +40,7 @@ args="
 finetune_simple_psi0_config \
 --seed=292285 \
 --exp=$exp \
+--train.output_dir=$EXPERIMENTS_HOME \
 --train.name=finetune \
 --train.data_parallel=ddp \
 --train.mixed_precision=bf16 \
@@ -45,7 +59,7 @@ finetune_simple_psi0_config \
 --train.lr_scheduler_kwargs.weight_decay=1e-6 \
 --train.lr_scheduler_kwargs.betas 0.95 0.999 \
 --log.report_to=wandb \
---data.root_dir=/hfm/data/simple \
+--data.root_dir=$DATA_HOME/simple \
 --data.train-repo-ids=$task \
 --data.transform.repack.pad-action-dim=36 \
 --data.transform.repack.pad-state-dim=36 \
@@ -60,8 +74,8 @@ finetune_simple_psi0_config \
 --data.transform.model.img-aug \
 --data.transform.model.resize.size 180 320 \
 --data.transform.model.center_crop.size 180 320 \
---model.model_name_or_path=/hfm/cache/checkpoints/psi0/pre.fast.1by1.2601091803.ckpt.ego200k.he30k \
---model.pretrained-action-header-path=/hfm/cache/checkpoints/psi0/postpre.1by1.pad36.2601131206.ckpt.he30k \
+--model.model_name_or_path=$PSI_HOME/cache/checkpoints/psi0/pre.fast.1by1.2601091803.ckpt.ego200k.he30k \
+--model.pretrained-action-header-path=$PSI_HOME/cache/checkpoints/psi0/postpre.1by1.pad36.2601131206.ckpt.he30k \
 --model.noise-scheduler=flow \
 --model.train-diffusion-steps=1000 \
 --model.n_conditions=0 \
@@ -78,6 +92,5 @@ finetune_simple_psi0_config \
 --model.max-delay=8
 "
 
-torchrun --nproc_per_node=$NPROC_PER_NODE --master_port=29500 scripts/train.py \
+torchrun --nproc_per_node=$NPROC_PER_NODE --master_port=29500 "$REPO_ROOT/scripts/train.py" \
     ${args}
-

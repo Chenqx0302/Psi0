@@ -2,6 +2,7 @@
 
 export OMP_NUM_THREADS=32
 export CUDA_VISIBLE_DEVICES=4,5,6,7
+export ACT_SIMPLE_DATA_ROOT=${ACT_SIMPLE_DATA_ROOT:-/data/chenqingxi/Psi0-data/simple}
 
 source .venv-act/bin/activate
 
@@ -44,7 +45,7 @@ simple_act_config \
 --train.lr_scheduler_kwargs.weight_decay=1e-6 \
 --train.lr_scheduler_kwargs.betas 0.95 0.999 \
 --train.lr_scheduler_type=cosine \
---data.root_dir=/hfm/data/simple \
+--data.root_dir=$ACT_SIMPLE_DATA_ROOT \
 --data.train-repo-ids=$task \
 --data.transform.repack.action_chunk_size=16 \
 --data.transform.repack.pad-action-dim=36 \

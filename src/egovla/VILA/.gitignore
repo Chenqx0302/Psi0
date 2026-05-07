@@ -7,6 +7,7 @@ eval_output/
 eval-result/
 hostfile
 core.*
+!llava/trl/core.py
 *.out
 captioner_bk/
 slurm-logs/
